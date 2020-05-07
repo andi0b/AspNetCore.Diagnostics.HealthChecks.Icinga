@@ -26,7 +26,7 @@ config.MapHealthChecks("/health", new HealthCheckOptions
 Query the overall status:
 
 ```bash
-aspnetcore_healthchek http://servicename/health '.Status'
+aspnetcore_healthcheck http://servicename/health
 ```
 
 
@@ -34,7 +34,7 @@ aspnetcore_healthchek http://servicename/health '.Status'
 Query the status of the health check named `PostgreSQL`
 
 ```bash
-aspnetcore_healthchek http://servicename/health '.PostgreSQL.Status'
+aspnetcore_healthcheck http://servicename/health "PostgreSQL"
 ```
 
 
