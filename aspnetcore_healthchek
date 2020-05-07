@@ -1,0 +1,49 @@
+#!/bin/bash
+url=$1
+json_query=$2
+
+
+# ICINGA Status Codes
+STATUS_OK=0
+STATUS_WARNING=1
+STATUS_CRITICAL=2
+STATUS_UNKNOWN=3
+
+
+json=`curl -sS $url` || exit $STATUS_CRITICAL
+
+
+if [ "$json_query" = "" ]; then    
+    status=`echo $json | jq -r ".status"`
+    duration=`echo $json | jq -r ".totalDuration"`
+    entries=`echo $json | jq -r ".entries"`
+    message="Overall status fetched, see details below [$duration]"$'\n'"$entries"
+else
+    status=`echo $json | jq -r ".entries.\"$json_query\".status"`
+    duration=`echo $json | jq -r ".entries.\"$json_query\".duration"`
+    data=`echo $json | jq -r ".entries.\"$json_query\".data"`
+    description=`echo $json | jq -r ".entries.\"$json_query\".description"`
+    message="$description [$duration]"$'\n'"Data: $data"
+fi
+
+
+case "$status" in
+    Healthy) 
+        echo "OK: $message"
+        exit $STATUS_OK
+        ;;
+    Degraded) 
+        echo "WARNING: $message"
+        exit $STATUS_WARNING
+        ;;
+    Unhealthy) 
+        echo "CRITICAL: $message"
+        exit $STATUS_CRITICAL
+        ;;
+    *) 
+        echo "CRITICAL: Error interpreting service response"
+        echo $json
+        exit $STATUS_CRITICAL
+        ;;
+esac
+
