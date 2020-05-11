@@ -1,6 +1,28 @@
 #!/bin/bash
-url=$1
-json_query=$2
+
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    -u|--url)
+    url="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -n|--health-check-name)
+    json_query="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    *)    # unknown option
+    POSITIONAL+=("$1") # save it in an array for later
+    shift # past argument
+    ;;
+esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
 
 
 # ICINGA Status Codes
@@ -11,7 +33,6 @@ STATUS_UNKNOWN=3
 
 
 json=`curl -sS $url` || exit $STATUS_CRITICAL
-
 
 if [ "$json_query" = "" ]; then    
     status=`echo $json | jq -r ".status"`
