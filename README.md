@@ -63,9 +63,9 @@ object Host "Host1" {
 }  
 
 object Service "RssService" {
-  host_name = "192.168.65.2"
+  host_name = "Host1"
   check_command = "aspnetcore_healthcheck"
-  vars.url = "http://host.lcl:8090/health"
+  vars.url = "http://host1/health"
 }
 ```
 ​	
