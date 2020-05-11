@@ -62,7 +62,7 @@ object Host "Host1" {
   check_command="hostalive"
 }  
 
-object Service "RssService" {
+object Service "Service1" {
   host_name = "Host1"
   check_command = "aspnetcore_healthcheck"
   vars.url = "http://host1/health"
